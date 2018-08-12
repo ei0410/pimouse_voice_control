@@ -17,7 +17,7 @@ class JuliusReceiver:
 
         rospy.on_shutdown(self.shutdown)
 
-        map(rospy.wait_for_service, ['/timed_motion', '/motor_on', '/motor_off'])
+        map(rospy.wait_for_service,['/timed_motion','/motor_on','/motor_off'])
         rospy.ServiceProxy('/motor_on', Trigger).call()
         self.tm = rospy.ServiceProxy('/timed_motion', TimedMotion)
 
@@ -36,7 +36,7 @@ class JuliusReceiver:
     def score(self, line):
         return float(line.split('CM="')[-1].split('"')[0])
 
-    def pu_command(self, th):
+    def pub_command(self, th):
         line = self.get_line()
 
         if "WHYPO" not in line:
@@ -46,16 +46,12 @@ class JuliusReceiver:
 
         if "左" in line:
             self.tm(-400, 400, 300)
-            print "left"
         elif "右" in line:
             self.tm(400, -400, 300)
-            print "right"
         elif "前" in line:
             self.tm(400, 400, 3000)
-            print "forward"
         elif "後" in line:
             self.tm(-400, -400, 1500)
-            print "back"
 
 if __name__ == '__main__':
     rospy.init_node("voice_to_command")
